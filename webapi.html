@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>to do api</title>
+
+	<style type="text/css">
+		.done{
+			text-decoration: line-through;
+		}
+	</style>
+</head>
+<body style="margin:0; padding:0; box-sizing:border-box;">
+	<div style="background-color: blue;margin-top: -20px;">
+	<h1>todo list</h1>
+	<h2>Mau Buat Apa?</h2>
+    </div>
+    <div style="margin-top: -10px">
+    	<form action="#">
+    		<input type="text" name="" id="input">
+    		<button onclick="add()">add</button>
+    		
+    	</form>
+
+    	<ul id="todo">
+    		
+    	</ul>
+    </div>
+
+    <script type="text/javascript">
+    	//implementasi ternery operator
+    	const cek = typeof(Storage)!==undefined?"bisa":"gabisa";
+    	console.info(cek);
+
+    	let input = document.getElementById('input');
+    	let todo = document.getElementById('todo');
+    	let element = document.createElement('li');
+
+    	let todoObject = {
+
+    	};
+
+    	//memuat isi storage
+    	if (isiLocalStorage = localStorage.getItem('STORAGE_TODO')) {
+    		todoObject = JSON.parse(isiLocalStorage);
+
+    		for(let key in todoObject){
+    			createList(key, todoObject[key]);
+    		}
+
+    	}
+    	const storageTODO = "STORAGE_TODO";
+
+    	function syncLocalStorage(action, inputan, status=false){
+    		switch(action){
+    			case 'ADD':
+    			case 'UPDATE':
+    			todoObject[inputan]= status;
+    			 break;
+    			case 'DELETE':
+    			delete todoObject[inputan];
+    			 break;
+    			default:
+    			 break;
+    		}
+    		localStorage.setItem(storageTODO, JSON.stringify(todoObject));
+    		return;
+    	}
+
+    	/*
+    	fungsi todo
+    	*/
+    	function add(argument) {
+    		//ambil nilai
+    		let text = input.value;
+    		createList(text);
+
+    		syncLocalStorage('ADD', text);
+
+    		text= "";
+    		
+    	}
+
+    	function createList(text, status=false){
+    		let isDone = status?"done":""; 
+    		let newTodo = `<li id="id"><span class="${isDone}"onclick="toggle(this)">${text}</span><span onclick="remove(this)">[x]</span></li>`;
+
+    		todo.insertAdjacentHTML('afterbegin', newTodo);
+    	}
+
+    	function toggle(el){
+    		let id = document.getElementById('id');
+    		let status = el.classList.toggle('done');
+    		syncLocalStorage('UPDATE', el.innerText, status)
+
+    	}
+
+    	function remove(remove){
+    		remove.parentElement.remove();
+    		syncLocalStorage('DELETE', remove.previousElementSibling.innerText.trim());
+    	}
+    </script>
+
+</body>
+</html>
